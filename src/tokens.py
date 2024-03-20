@@ -2,27 +2,31 @@ from typing import Optional
 import enum
 
 class TokenType(enum.Enum):
+    """
+    Class to maintain all valid tokens of language P.
+    """
 
     KEYWORD_MAIN      = "main"
-    KEYWORD_INT       = "int"
-    KEYWORD_FLOAT     = "float"
-    KEYWORD_CHAR      = "char"
-    KEYWORD_LET       = "let"
+    KEYWORD_READ      = "read"
+    KEYWORD_PRINT     = "print"
+    KEYWORD_RETURN    = "return"
+    KEYWORD_PRINTLN   = "println"
     KEYWORD_FUNCTION  = "fn"
+    KEYWORD_INT       = "int"
+    KEYWORD_LET       = "let"
+    KEYWORD_CHAR      = "char"
+    KEYWORD_FLOAT     = "float"
     KEYWORD_IF        = "if"
     KEYWORD_ELSE      = "else"
     KEYWORD_WHILE     = "while"
     KEYWORD_FOR       = "for"
-    KEYWORD_READ      = "read"
-    KEYWORD_PRINT     = "print"
-    KEYWORD_PRINTLN   = "println"
-    KEYWORD_RETURN    = "return"
 
     PUNCTUATOR_LBRACKET   = "("
     PUNCTUATOR_RBRACKET   = ")"
     PUNCTUATOR_LBRACE     = "{"
     PUNCTUATOR_RBRACE     = "}"
     PUNCTUATOR_COMMA      = ","
+    PUNCTUATOR_COLON      = ":"
     PUNCTUATOR_SEMICOLON  = ";"
 
     OPERATOR_LT        = "<"
@@ -47,18 +51,18 @@ class TokenType(enum.Enum):
     
     ERROR  = "ERROR" 
 
-    def get_token(value: str) -> Optional[str]:
+    def get_token(value: str) -> Optional[enum.Enum]:
         """
-        Encontra o nome do token com base no valor.
+        Encontra o token com base no valor.
 
         Args:
             value (str): O valor do token.
 
         Returns:
-            str: O nome do token, se encontrado, ou None caso contrário.
+            enum.Enum: O token, se encontrado, ou None caso contrário.
         """
         for token in TokenType:
             if value == token.value:
-                return token.name
+                return token
         
         return None

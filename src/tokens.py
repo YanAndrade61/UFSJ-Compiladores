@@ -6,7 +6,7 @@ class TokenType(enum.Enum):
     Class to maintain all valid tokens of language P.
     """
 
-    KEYWORD_MAIN      = "main"
+    # KEYWORD_MAIN      = "main"
     KEYWORD_READ      = "read"
     KEYWORD_PRINT     = "print"
     KEYWORD_RETURN    = "return"
@@ -21,8 +21,8 @@ class TokenType(enum.Enum):
     KEYWORD_WHILE     = "while"
     KEYWORD_FOR       = "for"
 
-    PUNCTUATOR_LBRACKET   = "("
-    PUNCTUATOR_RBRACKET   = ")"
+    PUNCTUATOR_LPAREN     = "("
+    PUNCTUATOR_RPAREN     = ")"
     PUNCTUATOR_LBRACE     = "{"
     PUNCTUATOR_RBRACE     = "}"
     PUNCTUATOR_COMMA      = ","

@@ -162,7 +162,7 @@ class Lexer:
             token_type (enum.Enum): The token to be include.
             lexem (str): The lexem that generate the token.
         """
-        self.tokens.append((token_type.name, lexem, self.line))
+        self.tokens.append((token_type, lexem, self.line))
 
 
 if __name__ == '__main__':
@@ -180,7 +180,7 @@ if __name__ == '__main__':
        print("Error: No such file.")
        exit()
 
-   tokens = Lexer.process(text)
-
+   tokens = Lexer(text).process()
+    
    for t in tokens:
        print(t)

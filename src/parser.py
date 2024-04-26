@@ -1,30 +1,29 @@
-Aqui está uma versão revisada e mais legível do seu código:
-
-```python
-from tokens import TokenType
-from symbols import Symbols
-from src.lexer import Lexer
-import enum
-import sys
-
+from src.tokens import TokenType
 
 class Parser:
 
     def __init__(self, tokens: str):
         self.tokens = tokens
         self.idx = 0
+        self.qtd_error = 0
 
     def parse(self) -> list[tuple[str, str, int]]:
-        return self.program()
+        self.program()
+        print(f'Analise Sintatica concluida: {self.qtd_error} erro(s) encontrado(s)')
+    
+    def error(self, expected_tokens: list[TokenType]):
+        self.qtd_error += 1
+        token = self.get_current_token()
+        nline = self.tokens[self.idx-1][2]
+        expected_tokens = [t.name for t in expected_tokens]
+        print(f'Erro linha {nline}:\n\tEsperado(s) {",".join(expected_tokens)}\n\tEncontrado {token.name}')
 
-    def match(self, expected_token):
+    def match(self, expected_token: TokenType):
         token = self.get_current_token()
         if token == expected_token:
-            print(f'Token {token.name} reconhecido na entrada.')
             self.idx += 1
         else:
-            print(f'Erro: esperado {expected_token.name}, encontrado {token.name}')
-            self.idx += 1
+            self.error([expected_token])            
 
     def program(self):
         self.function()
@@ -60,8 +59,11 @@ class Parser:
 
     def type_(self):
         token = self.get_current_token()
-        if token in [TokenType.KEYWORD_INT, TokenType.KEYWORD_FLOAT, TokenType.KEYWORD_CHAR]:
+        first = [TokenType.KEYWORD_INT, TokenType.KEYWORD_FLOAT, TokenType.KEYWORD_CHAR]
+        if token in first:
             self.match(token)
+        else:
+            self.error(first)
 
     def block(self):
         self.match(TokenType.PUNCTUATOR_LBRACE)
@@ -92,6 +94,7 @@ class Parser:
 
     def statement(self):
         token = self.get_current_token()
+        first = [TokenType.IDENTIFIER, TokenType.KEYWORD_IF, TokenType.PUNCTUATOR_LBRACE, TokenType.KEYWORD_WHILE, TokenType.KEYWORD_RETURN]
         if token == TokenType.IDENTIFIER:
             self.match(TokenType.IDENTIFIER)
             self.assignment_or_call()
@@ -113,9 +116,12 @@ class Parser:
             self.match(TokenType.KEYWORD_RETURN)
             self.expression()
             self.match(TokenType.PUNCTUATOR_SEMICOLON)
+        else:
+            self.error(first)
 
     def assignment_or_call(self):
         token = self.get_current_token()
+        first = [TokenType.OPERATOR_ASSIGN, TokenType.PUNCTUATOR_LPAREN]
         if token == TokenType.OPERATOR_ASSIGN:
             self.match(TokenType.OPERATOR_ASSIGN)
             self.expression()
@@ -125,10 +131,11 @@ class Parser:
             self.argument_list()
             self.match(TokenType.PUNCTUATOR_RPAREN)
         else:
-            print(f'Erro: atribuição ou chamada {token.name}')
+            self.error(first)
 
     def if_statement(self):
         token = self.get_current_token()
+        first = [TokenType.KEYWORD_IF, TokenType.PUNCTUATOR_LBRACE]
         if token == TokenType.KEYWORD_IF:
             self.match(TokenType.KEYWORD_IF)
             self.expression()
@@ -137,7 +144,7 @@ class Parser:
         elif token == TokenType.PUNCTUATOR_LBRACE:
             self.block()
         else:
-            print('Erro: comando if')
+            self.error(first)
 
     def else_statement(self):
         if self.get_current_token() == TokenType.KEYWORD_ELSE:
@@ -195,6 +202,7 @@ class Parser:
 
     def factor(self):
         token = self.get_current_token()
+        first = [TokenType.IDENTIFIER, TokenType.INT_CONSTANT, TokenType.FLOAT_CONSTANT, TokenType.CHAR_LITERAL, TokenType.PUNCTUATOR_LPAREN]
         if token == TokenType.IDENTIFIER:
             self.match(TokenType.IDENTIFIER)
             self.function_call()
@@ -205,7 +213,7 @@ class Parser:
             self.expression()
             self.match(TokenType.PUNCTUATOR_RPAREN)
         else:
-            print('Erro: fator')
+            self.error(first)
 
     def expression_optional(self):
         token = self.get_current_token()
@@ -237,62 +245,3 @@ class Parser:
             return self.tokens[self.idx][0]
 
 
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Erro: Arquivo não especificado.")
-        print("Uso: python lexer.py <caminho_do_arquivo>")
-        exit()
-
-    file_name = sys.argv[1]
-
-    try:
-        with open(file_name, "r") as file:
-            text = file.read()
-    except FileNotFoundError:
-        print("Erro: Arquivo não encontrado.")
-        exit()
-
-    tokens = Lexer(text).process()
-
-    Parser(tokens).parse()
-    def operator_equal(self):
-        token = self.get_current_token()
-        if token in [TokenType.SYMBOL_EQUAL, TokenType.SYMBOL_DIFF]:
-            self.match(token)
-
-    def function_call(self):
-        if self.get_current_token() == TokenType.PUNCTUATOR_LPAREN:
-            self.match(TokenType.PUNCTUATOR_LPAREN)
-            self.argument_list()
-            self.match(TokenType.PUNCTUATOR_RPAREN)
-
-    def argument_list(self):
-        if self.get_current_token() in [TokenType.IDENTIFIER, TokenType.INT_CONSTANT, TokenType.FLOAT_CONSTANT, TokenType.CHAR_LITERAL, TokenType.PUNCTUATOR_LPAREN]:
-            self.expression()
-            if self.get_current_token() == TokenType.PUNCTUATOR_COMMA:
-                self.match(TokenType.PUNCTUATOR_COMMA)
-                self.argument_list()
-
-    def get_current_token(self):
-        if self.idx < len(self.tokens):
-            return self.tokens[self.idx][0]
-
-
-if __name__ == '__main__':
-    if len(sys.argv) != 2:
-        print("Erro: Arquivo não especificado.")
-        print("Uso: python parser.py <caminho_do_arquivo>")
-        exit()
-
-    file_name = sys.argv[1]
-
-    try:
-        with open(file_name, "r") as file:
-            text = file.read()
-    except FileNotFoundError:
-        print("Erro: Arquivo não encontrado.")
-        exit()
-
-    tokens = Lexer(text).process()
-
-    Parser(tokens).parse()

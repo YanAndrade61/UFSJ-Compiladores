@@ -1,7 +1,6 @@
-from tokens import TokenType
-from symbols import Symbols
+from src.tokens import TokenType
+from src.symbols import Symbols
 import enum
-import sys
 
 class Lexer:
 
@@ -23,6 +22,7 @@ class Lexer:
         self.idx = 0
         self.line = 1
         self.tokens = []
+        self.errors = 0
 
     def process(self) -> list[tuple[str, str, int]]:
         """
@@ -35,7 +35,7 @@ class Lexer:
 
         while self.idx < len(self.text):
             self.get_next_token()
-        return self.tokens
+        return self.tokens, self.errors
 
     def get_next_token(self):
         """
@@ -89,6 +89,7 @@ class Lexer:
         
         # Unknown character, mark as error
         self.add_token(TokenType.ERROR, symbol)
+        self.error(symbol)
         self.idx += 1
 
     def get_identifier_or_keyword(self):
@@ -129,6 +130,7 @@ class Lexer:
             self.add_token(TokenType.CHAR_LITERAL, self.text[self.idx:self.idx+3])
         else:    
             self.add_token(TokenType.ERROR, self.text[self.idx:self.idx+3])
+            self.error(self.text[self.idx:self.idx+3])
         self.idx += 3
 
     def get_string_formatted(self):
@@ -139,6 +141,7 @@ class Lexer:
             self.add_token(TokenType.FORMATTED_STRING, self.text[self.idx:self.idx+4])
         else:    
             self.add_token(TokenType.ERROR, self.text[self.idx:self.idx+3])
+            self.error(self.text[self.idx:self.idx+3])
         self.idx += 4
 
     def next_symbol(self, offset: int = 1) -> str:
@@ -163,24 +166,14 @@ class Lexer:
             lexem (str): The lexem that generate the token.
         """
         self.tokens.append((token_type, lexem, self.line))
-
-
-if __name__ == '__main__':
-   if len(sys.argv) != 2:
-       print("Error: No such file.")
-       print("Use: python lexer.py <file_path>")
-       exit()
-
-   file_name = sys.argv[1]
-
-   try:
-       with open(file_name, "r") as file:
-           text = file.read()
-   except FileNotFoundError:
-       print("Error: No such file.")
-       exit()
-
-   tokens = Lexer(text).process()
     
-   for t in tokens:
-       print(t)
+    def error(self, lexem: str):
+        """
+        Register an error in the output file.
+
+        Args:
+            lexem (str): The lexem that generate the token.
+        """
+        self.errors += 1
+        with open('logs/error.log','+a') as fp:
+            print(f'Erro Lexico:\n\tLinha: {self.line}\n\tLexem: {lexem}',file=fp)

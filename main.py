@@ -30,8 +30,11 @@ if __name__ == '__main__':
     if(error):
         print('Corrija os erros para que a analise sintatica seja executada')
     else:
-        Parser(tokens).parse()
-    
+        parser = Parser(tokens)
+        parser.parse()
+        for name,table in parser.table_symbols.items():
+            print(f'Tabela de simbolos da funcao {name}:')
+            print(table)
     print('')
     print('Verifique os erros em logs/error.log')
     print('Verifique os tokens em logs/tokens.log')

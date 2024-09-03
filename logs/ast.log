@@ -1,0 +1,24 @@
+NoFunction - main: 
+   NoBlock: 
+      NoAssign: 
+         NoId: a
+         NoFloat: 8.2
+      NoAssign: 
+         NoId: b
+         NoInt: 1
+      NoAssign: 
+         NoId: c
+         NoFloat: 7.0
+      NoAssign: 
+         NoId: media
+         ExprAritmetica: 
+         /
+               ExprAritmetica: 
+               +
+                     ExprAritmetica: 
+                     +
+                           NoId: a
+                           NoId: b
+                     NoId: c
+               NoFloat: 3.0
+

@@ -1,3 +1,8 @@
+Integrantes do grupo:
+- Yan Ribeiro Andrade
+- Henrique Hott
+- Guilherme Bittencourt
+
 # Simulador de Compilador
 
 Este programa simula um compilador básico, implementando as duas primeiras partes: o analisador léxico e o analisador sintático.
@@ -22,10 +27,12 @@ O programa consiste em três partes principais:
 
 ## Arquivos de Log
 
-O programa gera dois arquivos de log:
+O programa gera quatro arquivos de log:
 
 - **tokens.log**: Contém os tokens identificados pelo analisador léxico.
 - **error.log**: Registra quaisquer erros encontrados durante a análise léxica ou sintática.
+- **symbol_tables.log**: Registra todas as tabelas de simbolos geradas.
+- **ast.log**: Registra todas as arvores sintaxes abstratas geradas.
 
 ## Exemplo
 

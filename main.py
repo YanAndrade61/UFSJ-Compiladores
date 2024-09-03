@@ -18,11 +18,11 @@ if __name__ == '__main__':
         print("Erro: Arquivo não encontrado.")
         exit()
 
-    with open('logs/error.log','w') as fp:
+    with open('./logs/error.log','w') as fp:
         pass
 
     tokens, error = Lexer(text).process()
-    with open('logs/tokens.log','w') as fp:
+    with open('./logs/tokens.log','w') as fp:
         for t in tokens: 
             print(t, file=fp)
     
@@ -32,10 +32,20 @@ if __name__ == '__main__':
     else:
         parser = Parser(tokens)
         parser.parse()
-        for name,table in parser.table_symbols.items():
-            print(f'Tabela de simbolos da funcao {name}:')
-            print(table)
+        
+        with open('./logs/symbol_tables.log','w') as fp:
+            for name,table in parser.table_symbols.items():
+                print(f'Tabela de simbolos da funcao {name}:', file=fp)
+                print(table, file=fp)
+
+        with open('./logs/ast.log','w') as fp:
+            for ast in parser.trees:
+                print(str(ast), file=fp)
+                ast.verify_type()  
+        
     print('')
     print('Verifique os erros em logs/error.log')
     print('Verifique os tokens em logs/tokens.log')
+    print('Verifique as tabelas de simbolo em logs/symbol_tables.log')
+    print('Verifique os arvores de sintaxe abstrata em logs/ast.log')
     

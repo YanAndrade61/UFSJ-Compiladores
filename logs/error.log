@@ -1,0 +1,5 @@
+ERRO SEMANTICO TIPOS DIFERENTES: b(char) e NoInt(int)
+ERRO SEMANTICO TIPOS DIFERENTES: a(float) e b(char)
+ERRO SEMANTICO TIPOS DIFERENTES: ExprAritmetica(Error) e c(float)
+ERRO SEMANTICO TIPOS DIFERENTES: ExprAritmetica(Error) e NoFloat(float)
+ERRO SEMANTICO TIPOS DIFERENTES: media(float) e ExprAritmetica(Error)
